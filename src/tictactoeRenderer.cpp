@@ -25,30 +25,32 @@ void tictactoeRenderer::start()
     srand(time(0));
     int c = rand()%2;
     std::vector<Figure*> figures;
-    sf::RenderWindow window(sf::VideoMode(900, 500), "TicTacToe");
+    sf::RenderWindow window(sf::VideoMode({800, 500}), "TicTacToe");
 
-    sf::Text text;
     sf::Font font;
-    font.loadFromFile("arial.ttf");
-    text.setFont(font);
-    text.setPosition(500, 200);
+    if(!font.openFromFile("arial.ttf") && !font.openFromFile("bin/Release/arial.ttf")) {
+        return;
+    }
+
+    sf::Text text(font, "", 200);
+    text.setPosition(sf::Vector2f(500, 200));
+    text.setCharacterSize(20);
 
 
     while (window.isOpen())
     {
-        sf::Event event;
-
         //player turn
         if(c % 2)
         {
-            while (window.pollEvent(event))
+            while (const std::optional event = window.pollEvent())
             {
-                if (event.type == sf::Event::Closed)
+                if (event->is<sf::Event::Closed>())
                     window.close();
-                if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Button::Left))
+                if (event->is<sf::Event::MouseButtonPressed>() && event->getIf<sf::Event::MouseButtonPressed>()->button == sf::Mouse::Button::Left)
                 {
-                    int x = event.mouseButton.x;
-                    int y = event.mouseButton.y;
+                    auto mouse = event->getIf<sf::Event::MouseButtonPressed>();
+                    int x = mouse->position.x;
+                    int y = mouse->position.y;
                     if(x < 300 && y < 300)
                     {
                         if(field[x/100][y/100] == ' ')
@@ -64,9 +66,9 @@ void tictactoeRenderer::start()
         //computer turn
         else
         {
-            while (window.pollEvent(event))
+           while (const std::optional event = window.pollEvent())
             {
-                if (event.type == sf::Event::Closed)
+                if (event->is<sf::Event::Closed>())
                     window.close();
             }
             std::pair<int, int> bestMove = t.action(field, 'o', 'x');
@@ -103,11 +105,11 @@ void tictactoeRenderer::start()
 
         while(ended)
         {
-            while (window.pollEvent(event))
+            while (const std::optional event = window.pollEvent())
             {
-                if (event.type == sf::Event::Closed)
+                if (event->is<sf::Event::Closed>())
                     window.close();
-                if ((event.type == sf::Event::MouseButtonPressed) && (event.mouseButton.button == sf::Mouse::Button::Left))
+                if ((event->is<sf::Event::MouseButtonPressed>()) && event->getIf<sf::Event::MouseButtonPressed>()->button == sf::Mouse::Button::Left)
                 {
                     c = rand()%2;
                     for(int i = 0; i < 3; i++)
