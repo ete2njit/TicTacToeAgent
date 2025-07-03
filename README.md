@@ -1,6 +1,6 @@
 # TicTacToeAgent
 
-##SFML
+## SFML
 
 This program uses SFML to display graphics on screen. You can find it here: https://www.sfml-dev.org/index.php.
 
